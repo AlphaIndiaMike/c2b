@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>components/qmldir</file>
+        <file>components/TCButton.qml</file>
+        <file>components/EditorPanel.qml</file>
+        <file>components/PreviewPanel.qml</file>
+        <file>components/BottomToolbar.qml</file>
+        <file>theme/qmldir</file>
+        <file>theme/Theme.qml</file>
+    </qresource>
+</RCC>
