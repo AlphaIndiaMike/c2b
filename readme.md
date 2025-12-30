@@ -54,12 +54,6 @@ QML for UI, C++ for file operations and Markdown processing.
 
 It's a learning project. The point was understanding Qt, not building VS Code.
 
-## Notes
-
-- Put images in the same folder as your `.md` file
-- Preview shows exactly what gets saved to HTML
-- F-key buttons aren't hooked up yet
-
 ## License
 
 No expectations

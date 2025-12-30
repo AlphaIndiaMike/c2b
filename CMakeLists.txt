@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 
-qt_standard_project_setup(REQUIRES 6.8)
+qt_standard_project_setup(REQUIRES 6.7)
 
 find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 COMPONENTS WebEngineQuick)
@@ -47,8 +47,6 @@ qt_add_qml_module(appC2B
         app/docman/src/DocumentManager.cpp
         app/htmlman/inc/DocHTML.h
         app/htmlman/src/DocHTML.cpp
-        RESOURCES gitignore
-        RESOURCES readme.md
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

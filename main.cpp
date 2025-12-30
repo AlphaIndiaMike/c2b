@@ -1,17 +1,12 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-//#include "Markdownconverter.h"
 
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
-
-    // Register MarkdownConverter app
-    //MarkdownConverter converter;
-    //engine.rootContext()->setContextProperty("MarkdownConverter", &converter);
 
     // Register resources
     engine.addImportPath("qrc:/");
