@@ -22,8 +22,8 @@ public:
                                           const QString &htmlContent,
                                           const QString &baseFilePath);
 
-    // Get base URL for images
     Q_INVOKABLE QString getBaseUrl(const QString &filePath);
+    Q_INVOKABLE QString getFileName(const QString &filePath);
 
     static DocumentManager *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
     {

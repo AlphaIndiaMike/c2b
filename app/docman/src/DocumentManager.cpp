@@ -73,3 +73,10 @@ QString DocumentManager::getBaseUrl(const QString &filePath)
     QUrl url = QUrl::fromLocalFile(dirPath + "/");
     return url.toString();
 }
+
+QString DocumentManager::getFileName(const QString &filePath)
+{
+    QFileInfo fileInfo(filePath);
+    QString fileName = fileInfo.baseName();
+    return fileName;
+}

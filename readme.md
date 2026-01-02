@@ -8,8 +8,6 @@ A desktop Markdown editor I built while learning Qt 6. Split-pane editor with li
 
 - Edit Markdown, see HTML preview in real-time
 - Saves `.md` and auto-generates `.html` with TOC
-- Images work with relative paths
-- Bottom toolbar with Total Commander-style F-key buttons
 
 The goal: take markdown chunks and turn them into one readable document with navigation.
 
