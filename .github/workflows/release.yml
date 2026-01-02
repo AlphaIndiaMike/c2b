@@ -33,10 +33,42 @@ jobs:
       - name: Install
         run: cmake --install build --config Release
       
+      - name: Deploy Qt dependencies
+        run: |
+          # Find the .app bundle (adjust name if needed)
+          APP_PATH=$(find build/install -name "*.app" -type d | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            echo "Error: No .app bundle found"
+            exit 1
+          fi
+          echo "Found app at: $APP_PATH"
+          
+          # Deploy Qt dependencies
+          macdeployqt "$APP_PATH" -verbose=2
+          
+          # Code sign (ad-hoc signature for non-notarized apps)
+          codesign --force --deep --sign - "$APP_PATH"
+      
       - name: Create DMG
         run: |
-          cd build/install
-          hdiutil create -volname "C2B" -srcfolder appC2B.app -ov -format UDZO ../../C2B-macOS-arm64.dmg
+          APP_PATH=$(find build/install -name "*.app" -type d | head -n 1)
+          APP_NAME=$(basename "$APP_PATH")
+
+          mkdir -p dmg_temp
+          cp -R "$APP_PATH" dmg_temp/
+          
+          cat > dmg_temp/INSTALL.txt << 'EOF'
+          C2B for macOS - Installation Instructions
+          ==========================================
+          
+          To open the app:
+          1. Open Terminal
+          2. Run: xattr -cr /path/to/appC2B.app
+          3. Double-click the app to open normally
+
+          EOF
+          
+          hdiutil create -volname "C2B" -srcfolder dmg_temp -ov -format UDZO C2B-macOS-arm64.dmg
           
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -68,6 +100,20 @@ jobs:
       
       - name: Install
         run: cmake --install build --config Release
+      
+      - name: Deploy Qt dependencies
+        shell: bash
+        run: |
+          # Find the executable
+          EXE_PATH=$(find build/install/bin -name "*.exe" -type f | head -n 1)
+          if [ -z "$EXE_PATH" ]; then
+            echo "Error: No .exe found"
+            exit 1
+          fi
+          echo "Found executable at: $EXE_PATH"
+          
+          # Deploy Qt dependencies
+          windeployqt "$EXE_PATH" --release --no-compiler-runtime
           
       - name: Package
         shell: bash
@@ -81,40 +127,8 @@ jobs:
           name: windows-build
           path: C2B-Windows-x64.zip
 
-  build-linux:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: '6.7.3'
-          modules: 'qtwebengine qtwebchannel qtpositioning'
-          cache: true
-          
-      - name: Configure
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=build/install
-      
-      - name: Build
-        run: cmake --build build --config Release
-      
-      - name: Install
-        run: cmake --install build --config Release
-          
-      - name: Package
-        run: |
-          cd build/install
-          tar czf ../../C2B-Linux-x64.tar.gz *
-          
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-build
-          path: C2B-Linux-x64.tar.gz
-
   create-release:
-    needs: [build-macos, build-windows, build-linux]
+    needs: [build-macos, build-windows]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -128,6 +142,6 @@ jobs:
           files: |
             macos-build/C2B-macOS-arm64.dmg
             windows-build/C2B-Windows-x64.zip
-            linux-build/C2B-Linux-x64.tar.gz
+            linux-build/C2B-Linux-x86_64.AppImage
           draft: false
           prerelease: false
